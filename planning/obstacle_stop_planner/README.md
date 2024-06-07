@@ -31,16 +31,7 @@
 
 ### Common Parameter
 
-| Parameter                              | Type   | Description                                                                               |
-| -------------------------------------- | ------ | ----------------------------------------------------------------------------------------- |
-| `enable_slow_down`                     | bool   | enable slow down planner [-]                                                              |
-| `max_velocity`                         | double | max velocity [m/s]                                                                        |
-| `chattering_threshold`                 | double | even if the obstacle disappears, the stop judgment continues for chattering_threshold [s] |
-| `enable_z_axis_obstacle_filtering`     | bool   | filter obstacles in z axis (height) [-]                                                   |
-| `z_axis_filtering_buffer`              | double | additional buffer for z axis filtering [m]                                                |
-| `use_predicted_objects`                | bool   | whether to use predicted objects for collision and slowdown detection [-]                 |
-| `predicted_object_filtering_threshold` | double | threshold for filtering predicted objects [valid only publish_obstacle_polygon true] [m]  |
-| `publish_obstacle_polygon`             | bool   | if use_predicted_objects is true, node publishes collision polygon [-]                    |
+{{ json_to_markdown("planning/obstacle_stop_planner/schema/common.schema.json") }}
 
 ## Obstacle Stop Planner
 
@@ -103,22 +94,7 @@ stopped due to other factors.
 
 ### Parameters
 
-#### Stop position
-
-| Parameter                             | Type   | Description                                                                                                                                    |
-| ------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `max_longitudinal_margin`             | double | margin between obstacle and the ego's front [m]                                                                                                |
-| `max_longitudinal_margin_behind_goal` | double | margin between obstacle and the ego's front when the stop point is behind the goal[m]                                                          |
-| `min_longitudinal_margin`             | double | if any obstacle exists within `max_longitudinal_margin`, this module set margin as the value of _stop margin_ to `min_longitudinal_margin` [m] |
-| `hold_stop_margin_distance`           | double | parameter for restart prevention (See above section) [m]                                                                                       |
-
-#### Obstacle detection area
-
-| Parameter                              | Type   | Description                                                                         |
-| -------------------------------------- | ------ | ----------------------------------------------------------------------------------- |
-| `lateral_margin`                       | double | lateral margin from the vehicle footprint for collision obstacle detection area [m] |
-| `step_length`                          | double | step length for pointcloud search range [m]                                         |
-| `enable_stop_behind_goal_for_obstacle` | bool   | enabling extend trajectory after goal lane for obstacle detection                   |
+{{ json_to_markdown("planning/obstacle_stop_planner/schema/obstacle_stop_planner.schema.json") }}
 
 ### Flowchart
 
@@ -186,25 +162,7 @@ down section.
 
 ### Parameters
 
-#### Slow down section
-
-| Parameter                      | Type   | Description                                     |
-| ------------------------------ | ------ | ----------------------------------------------- |
-| `longitudinal_forward_margin`  | double | margin between obstacle and the ego's front [m] |
-| `longitudinal_backward_margin` | double | margin between obstacle and the ego's rear [m]  |
-
-#### Obstacle detection area
-
-| Parameter        | Type   | Description                                                                         |
-| ---------------- | ------ | ----------------------------------------------------------------------------------- |
-| `lateral_margin` | double | lateral margin from the vehicle footprint for slow down obstacle detection area [m] |
-
-#### Slow down target velocity
-
-| Parameter                | Type   | Description                  |
-| ------------------------ | ------ | ---------------------------- |
-| `max_slow_down_velocity` | double | max slow down velocity [m/s] |
-| `min_slow_down_velocity` | double | min slow down velocity [m/s] |
+{{ json_to_markdown("planning/obstacle_stop_planner/schema/obstacle_stop_planner.schema.json") }}
 
 ### Flowchart
 
@@ -242,38 +200,8 @@ stop
 trajectory. The value of maximum velocity depends on the own velocity, the velocity of the point cloud ( = velocity of
 the front car), and the distance to the point cloud (= distance to the front car).
 
-| Parameter                                                        | Type   | Description                                                                                                       |
-| ---------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
-| `adaptive_cruise_control.use_object_to_estimate_vel`             | bool   | use dynamic objects for estimating object velocity or not (valid only if osp.use_predicted_objects false)         |
-| `adaptive_cruise_control.use_pcl_to_estimate_vel`                | bool   | use raw pointclouds for estimating object velocity or not (valid only if osp.use_predicted_objects false)         |
-| `adaptive_cruise_control.consider_obj_velocity`                  | bool   | consider forward vehicle velocity to calculate target velocity in adaptive cruise or not                          |
-| `adaptive_cruise_control.obstacle_velocity_thresh_to_start_acc`  | double | start adaptive cruise control when the velocity of the forward obstacle exceeds this value [m/s]                  |
-| `adaptive_cruise_control.obstacle_velocity_thresh_to_stop_acc`   | double | stop acc when the velocity of the forward obstacle falls below this value [m/s]                                   |
-| `adaptive_cruise_control.emergency_stop_acceleration`            | double | supposed minimum acceleration (deceleration) in emergency stop [m/ss]                                             |
-| `adaptive_cruise_control.emergency_stop_idling_time`             | double | supposed idling time to start emergency stop [s]                                                                  |
-| `adaptive_cruise_control.min_dist_stop`                          | double | minimum distance of emergency stop [m]                                                                            |
-| `adaptive_cruise_control.obstacle_emergency_stop_acceleration`   | double | supposed minimum acceleration (deceleration) in emergency stop [m/ss]                                             |
-| `adaptive_cruise_control.max_standard_acceleration`              | double | supposed maximum acceleration in active cruise control [m/ss]                                                     |
-| `adaptive_cruise_control.min_standard_acceleration`              | double | supposed minimum acceleration (deceleration) in active cruise control [m/ss]                                      |
-| `adaptive_cruise_control.standard_idling_time`                   | double | supposed idling time to react object in active cruise control [s]                                                 |
-| `adaptive_cruise_control.min_dist_standard`                      | double | minimum distance in active cruise control [m]                                                                     |
-| `adaptive_cruise_control.obstacle_min_standard_acceleration`     | double | supposed minimum acceleration of forward obstacle [m/ss]                                                          |
-| `adaptive_cruise_control.margin_rate_to_change_vel`              | double | rate of margin distance to insert target velocity [-]                                                             |
-| `adaptive_cruise_control.use_time_compensation_to_calc_distance` | bool   | use time-compensation to calculate distance to forward vehicle                                                    |
-| `adaptive_cruise_control.p_coefficient_positive`                 | double | coefficient P in PID control (used when target dist -current_dist >=0) [-]                                        |
-| `adaptive_cruise_control.p_coefficient_negative`                 | double | coefficient P in PID control (used when target dist -current_dist &lt;0) [-]                                      |
-| `adaptive_cruise_control.d_coefficient_positive`                 | double | coefficient D in PID control (used when delta_dist >=0) [-]                                                       |
-| `adaptive_cruise_control.d_coefficient_negative`                 | double | coefficient D in PID control (used when delta_dist &lt;0) [-]                                                     |
-| `adaptive_cruise_control.object_polygon_length_margin`           | double | The distance to extend the polygon length the object in pointcloud-object matching [m]                            |
-| `adaptive_cruise_control.object_polygon_width_margin`            | double | The distance to extend the polygon width the object in pointcloud-object matching [m]                             |
-| `adaptive_cruise_control.valid_estimated_vel_diff_time`          | double | Maximum time difference treated as continuous points in speed estimation using a point cloud [s]                  |
-| `adaptive_cruise_control.valid_vel_que_time`                     | double | Time width of information used for speed estimation in speed estimation using a point cloud [s]                   |
-| `adaptive_cruise_control.valid_estimated_vel_max`                | double | Maximum value of valid speed estimation results in speed estimation using a point cloud [m/s]                     |
-| `adaptive_cruise_control.valid_estimated_vel_min`                | double | Minimum value of valid speed estimation results in speed estimation using a point cloud [m/s]                     |
-| `adaptive_cruise_control.thresh_vel_to_stop`                     | double | Embed a stop line if the maximum speed calculated by ACC is lower than this speed [m/s]                           |
-| `adaptive_cruise_control.lowpass_gain_of_upper_velocity`         | double | Lowpass-gain of target velocity                                                                                   |
-| `adaptive_cruise_control.use_rough_velocity_estimation:`         | bool   | Use rough estimated velocity if the velocity estimation is failed (valid only if osp.use_predicted_objects false) |
-| `adaptive_cruise_control.rough_velocity_rate`                    | double | In the rough velocity estimation, the velocity of front car is estimated as self current velocity \* this value   |
+### Parameters
+{{ json_to_markdown("planning/obstacle_stop_planner/schema/adaptive_cruise_control.schema.json") }}
 
 ### Flowchart
 
