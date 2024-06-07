@@ -201,6 +201,7 @@ trajectory. The value of maximum velocity depends on the own velocity, the veloc
 the front car), and the distance to the point cloud (= distance to the front car).
 
 ### Parameters
+
 {{ json_to_markdown("planning/obstacle_stop_planner/schema/adaptive_cruise_control.schema.json") }}
 
 ### Flowchart
